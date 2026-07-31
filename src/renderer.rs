@@ -45,4 +45,21 @@ impl Renderer {
 
         stdout.flush()
     }
+
+    pub fn error(&self, message: &str) -> io::Result<()> {
+        let theme = crate::theme::theme();
+
+        let mut stdout = io::stdout();
+
+        execute!(
+            stdout,
+            SetForegroundColor(theme.error),
+            Print("✘ "),
+            Print(message),
+            ResetColor,
+            Print("\n"),
+        )?;
+
+        stdout.flush()
+    }
 }

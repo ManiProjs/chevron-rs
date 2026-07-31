@@ -4,6 +4,7 @@ use std::io;
 #[derive(Debug)]
 pub enum ChevronError {
     Cancelled,
+    Validation(String),
     Io(io::Error),
 }
 
@@ -12,6 +13,7 @@ impl fmt::Display for ChevronError {
         match self {
             Self::Cancelled => write!(f, "prompt cancelled"),
             Self::Io(err) => write!(f, "{}", err),
+            Self::Validation(message) => write!(f, "validation failed: {message}"),
         }
     }
 }

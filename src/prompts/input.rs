@@ -1,10 +1,10 @@
+use crate::{ChevronError, Prompt, Renderer, Validator};
 use std::io;
-
-use crate::{ChevronError, Prompt, Renderer};
 
 pub struct Input {
     message: String,
     renderer: Renderer,
+    validator: Option<Validator<String>>,
 }
 
 impl Input {
@@ -12,11 +12,15 @@ impl Input {
         Self {
             message: message.into(),
             renderer: Renderer::new(),
+            validator: None,
         }
     }
 
-    pub fn theme(mut self) -> Self {
-        self.renderer = Renderer::new();
+    pub fn validate<F>(mut self, validator: F) -> Self
+    where
+        F: Fn(&String) -> Result<(), String> + 'static,
+    {
+        self.validator = Some(Box::new(validator));
         self
     }
 }
@@ -25,13 +29,24 @@ impl Prompt for Input {
     type Output = String;
 
     fn ask(&self) -> Result<Self::Output, ChevronError> {
-        self.renderer.prompt(&self.message)?;
+        loop {
+            self.renderer.prompt(&self.message)?;
 
-        let mut value = String::new();
-        io::stdin().read_line(&mut value)?;
+            let mut value = String::new();
+            io::stdin().read_line(&mut value)?;
 
-        self.renderer.clear_prompt()?;
+            let value = value.trim().to_string();
 
-        Ok(value.trim().to_string())
+            self.renderer.clear_prompt()?;
+
+            if let Some(validator) = &self.validator {
+                if let Err(message) = validator(&value) {
+                    self.renderer.error(&message)?;
+                    continue;
+                }
+            }
+
+            return Ok(value);
+        }
     }
 }

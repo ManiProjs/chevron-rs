@@ -9,6 +9,7 @@ pub struct Theme {
     pub pointer: Color,
     pub message: Color,
     pub answer: Color,
+    pub error: Color,
 }
 
 impl Default for Theme {
@@ -17,6 +18,7 @@ impl Default for Theme {
             pointer: Color::Cyan,
             message: Color::White,
             answer: Color::Green,
+            error: Color::Red,
         }
     }
 }

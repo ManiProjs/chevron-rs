@@ -9,6 +9,7 @@ fn main() -> Result<(), ChevronError> {
         pointer: Color::Magenta,
         message: Color::Blue,
         answer: Color::Yellow,
+        error: Color::Red,
     };
 
     set_theme(theme);

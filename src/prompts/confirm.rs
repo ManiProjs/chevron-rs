@@ -1,5 +1,3 @@
-use std::io::{self, Write};
-
 use crossterm::{
     event::{Event, KeyCode, KeyModifiers, read},
     terminal::{disable_raw_mode, enable_raw_mode},
