@@ -1,7 +1,7 @@
 use std::io::{self, Write};
 
 use crossterm::{
-    cursor::MoveToColumn,
+    cursor::{MoveToColumn, MoveUp},
     execute,
     style::{Print, ResetColor, SetForegroundColor},
     terminal::{Clear, ClearType},
@@ -49,10 +49,9 @@ impl Prompt for Input {
         let mut value = String::new();
         io::stdin().read_line(&mut value)?;
 
-        let value = value.trim().to_string();
-
         execute!(
             stdout,
+            MoveUp(1),
             MoveToColumn(0),
             Clear(ClearType::CurrentLine),
             ResetColor,
@@ -60,6 +59,6 @@ impl Prompt for Input {
 
         stdout.flush()?;
 
-        Ok(value)
+        Ok(value.trim().to_string())
     }
 }
