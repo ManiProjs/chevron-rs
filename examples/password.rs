@@ -1,7 +1,7 @@
-use chevron::Prompt;
 use chevron::prompts::Password;
+use chevron::{ChevronError, Prompt};
 
-fn main() -> std::io::Result<()> {
+fn main() -> Result<(), ChevronError> {
     let password = Password::new("Password").ask()?;
 
     println!("Length: {}", password.len());

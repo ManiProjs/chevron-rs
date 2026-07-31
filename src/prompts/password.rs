@@ -6,7 +6,7 @@ use crossterm::{
     style::Print,
 };
 
-use crate::{Prompt, Renderer};
+use crate::{ChevronError, Prompt, Renderer};
 
 pub struct Password {
     message: String,
@@ -25,7 +25,7 @@ impl Password {
 impl Prompt for Password {
     type Output = String;
 
-    fn ask(&self) -> io::Result<Self::Output> {
+    fn ask(&self) -> Result<Self::Output, ChevronError> {
         self.renderer.prompt(&self.message)?;
 
         let _raw_mode = crate::raw_mode::RawMode::new()?;
@@ -39,10 +39,7 @@ impl Prompt for Password {
                     KeyCode::Enter => break,
 
                     KeyCode::Char('c') if event.modifiers.contains(KeyModifiers::CONTROL) => {
-                        return Err(io::Error::new(
-                            io::ErrorKind::Interrupted,
-                            "cancelled by user",
-                        ));
+                        return Err(ChevronError::Cancelled);
                     }
 
                     KeyCode::Char(c) => {

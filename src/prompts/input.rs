@@ -1,6 +1,6 @@
 use std::io;
 
-use crate::{Prompt, Renderer};
+use crate::{ChevronError, Prompt, Renderer};
 
 pub struct Input {
     message: String,
@@ -24,7 +24,7 @@ impl Input {
 impl Prompt for Input {
     type Output = String;
 
-    fn ask(&self) -> io::Result<Self::Output> {
+    fn ask(&self) -> Result<Self::Output, ChevronError> {
         self.renderer.prompt(&self.message)?;
 
         let mut value = String::new();

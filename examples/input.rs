@@ -1,7 +1,7 @@
-use chevron::Prompt;
 use chevron::prompts::Input;
+use chevron::{ChevronError, Prompt};
 
-fn main() -> std::io::Result<()> {
+fn main() -> Result<(), ChevronError> {
     let name = Input::new("What's your name?").ask()?;
 
     println!("Hello, {name}!");
