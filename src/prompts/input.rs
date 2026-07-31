@@ -1,30 +1,18 @@
-use std::io::{self, Write};
+use std::io;
 
-use crossterm::{
-    cursor::{MoveToColumn, MoveUp},
-    execute,
-    style::{Print, ResetColor, SetForegroundColor},
-    terminal::{Clear, ClearType},
-};
-
-use crate::{Prompt, Theme};
+use crate::{Prompt, Renderer};
 
 pub struct Input {
     message: String,
-    theme: Theme,
+    renderer: Renderer,
 }
 
 impl Input {
     pub fn new(message: impl Into<String>) -> Self {
         Self {
             message: message.into(),
-            theme: Theme::default(),
+            renderer: Renderer::new(Default::default()),
         }
-    }
-
-    pub fn theme(mut self, theme: Theme) -> Self {
-        self.theme = theme;
-        self
     }
 }
 
@@ -32,32 +20,12 @@ impl Prompt for Input {
     type Output = String;
 
     fn ask(&self) -> io::Result<Self::Output> {
-        let mut stdout = io::stdout();
-
-        execute!(
-            stdout,
-            SetForegroundColor(self.theme.pointer),
-            Print("? "),
-            SetForegroundColor(self.theme.message),
-            Print(&self.message),
-            Print(": "),
-            SetForegroundColor(self.theme.answer),
-        )?;
-
-        stdout.flush()?;
+        self.renderer.prompt(&self.message)?;
 
         let mut value = String::new();
         io::stdin().read_line(&mut value)?;
 
-        execute!(
-            stdout,
-            MoveUp(1),
-            MoveToColumn(0),
-            Clear(ClearType::CurrentLine),
-            ResetColor,
-        )?;
-
-        stdout.flush()?;
+        self.renderer.clear_prompt()?;
 
         Ok(value.trim().to_string())
     }
