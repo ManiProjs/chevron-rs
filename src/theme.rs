@@ -1,20 +1,20 @@
+use crossterm::style::Color;
+
 #[derive(Clone)]
 pub struct Theme {
-    pub pointer: &'static str,
-    pub checked: &'static str,
-    pub unchecked: &'static str,
-    pub success: &'static str,
-    pub error: &'static str,
+    pub pointer: Color,
+    pub message: Color,
+    pub answer: Color,
+    pub success: Color,
 }
 
 impl Default for Theme {
     fn default() -> Self {
         Self {
-            pointer: "❯",
-            checked: "◉",
-            unchecked: "○",
-            success: "✔",
-            error: "✘",
+            pointer: Color::Cyan,
+            message: Color::White,
+            answer: Color::Green,
+            success: Color::Green,
         }
     }
 }
