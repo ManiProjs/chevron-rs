@@ -7,28 +7,26 @@ use crossterm::{
     terminal::{Clear, ClearType},
 };
 
-use crate::Theme;
-
-pub struct Renderer {
-    pub theme: Theme,
-}
+pub struct Renderer;
 
 impl Renderer {
-    pub fn new(theme: Theme) -> Self {
-        Self { theme }
+    pub fn new() -> Self {
+        Self
     }
 
     pub fn prompt(&self, message: &str) -> io::Result<()> {
+        let theme = crate::theme::theme();
+
         let mut stdout = io::stdout();
 
         execute!(
             stdout,
-            SetForegroundColor(self.theme.pointer),
+            SetForegroundColor(theme.pointer),
             Print("? "),
-            SetForegroundColor(self.theme.message),
+            SetForegroundColor(theme.message),
             Print(message),
             Print(": "),
-            SetForegroundColor(self.theme.answer),
+            SetForegroundColor(theme.answer),
         )?;
 
         stdout.flush()
