@@ -1,6 +1,6 @@
 use std::io;
 
-use crate::{Prompt, Renderer};
+use crate::{Prompt, Renderer, Theme};
 
 pub struct Input {
     message: String,
@@ -11,8 +11,13 @@ impl Input {
     pub fn new(message: impl Into<String>) -> Self {
         Self {
             message: message.into(),
-            renderer: Renderer::new(Default::default()),
+            renderer: Renderer::new(Theme::default()),
         }
+    }
+
+    pub fn theme(mut self, theme: Theme) -> Self {
+        self.renderer = Renderer::new(theme);
+        self
     }
 }
 
